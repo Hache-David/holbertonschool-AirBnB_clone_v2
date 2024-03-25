@@ -118,7 +118,7 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-    
+
         args_list = args.split(" ")
         if args_list[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
@@ -130,23 +130,25 @@ class HBNBCommand(cmd.Cmd):
             key_value = arg.split("=")
             if len(key_value) == 2:
                 key, value = key_value
-                # Replace underscores with spaces and remove quotes for strings
-                if value[0] == '"' and value[-1] == '"':
+                # Handle strings
+                if value.startswith("\"") and value.endswith("\""):
                     value = value[1:-1].replace('_', ' ').replace('\\"', '"')
-                # Convert to float or int if applicable
-                try:
-                    if '.' in value:
-                        value = float(value)
-                    else:
-                        value = int(value)
-                except ValueError:
-                    continue  # Skip if the value cannot be converted to number
-            
-                setattr(new_instance, key, value)  # Set the attribute if everything is valid
-        
-        storage.new(new_instance)
-        storage.save()
+                # Handle floats and integers
+                else:
+                    try:
+                        if '.' in value:
+                            value = float(value)
+                        else:
+                            value = int(value)
+                    except ValueError:
+                        # If conversion fails, keep the original value
+                        pass
+                # Set the attribute
+                setattr(new_instance, key, value)
+
+        new_instance.save()
         print(new_instance.id)
+
 
     def help_create(self):
         """ Help information for the create method """
