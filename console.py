@@ -144,9 +144,8 @@ class HBNBCommand(cmd.Cmd):
             
                 setattr(new_instance, key, value)  # Set the attribute if everything is valid
 
-        new_instance.save()
+        storage.save()
         print(new_instance.id)
-        new_instance.save()
 
     def help_create(self):
         """ Help information for the create method """
