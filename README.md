@@ -139,4 +139,84 @@ Usage: <class_name>.update(<_id>, <dictionary>)
 (hbnb) User.all()
 (hbnb) ["[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'name': 'Fred the Frog', 'age': 9, 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
 ```
+
+<center> <h2>Learning Objectives</h2> </center>
+
+- What is Unit testing and how to implement it in a large project
+- What is `*args` and how to use it
+- What is `**kwargs` and how to use it
+- How to handle named arguments in a function
+- How to create a MySQL database
+- How to create a MySQL user and grant it privileges
+- What ORM means
+- How to map a Python Class to a MySQL table
+- How to handle 2 different storage engines with the same codebase
+- How to use environment variables
+
+1. `Unit Testing in Large Projects`: Unit testing involves testing individual components or functions in isolation from the rest of the application. In large projects, it's essential to have a structured approach to unit testing. Here's how you can implement it:
+- `Framework`: Choose a unit testing framework that is compatible with your technology stack (e.g., JUnit for Java, pytest for Python).
+- `Test Cases`: Write test cases that cover all the critical paths of your functions, including edge cases.
+- `Mocking`: Use mocking to isolate the unit being tested from its dependencies.
+- `Continuous Integration`: Integrate unit tests into your CI/CD pipeline to ensure tests are run automatically.
+- `Code Coverage`: Aim for high code coverage but prioritize meaningful tests over merely inflating coverage metrics.
+
+1. `*args in Python`: `*args` allows a function to accept an arbitrary number of positional arguments. It's used in function definitions. Inside the function, args is a tuple of the passed positional arguments.
+```bash
+def sum_numbers(*args):
+    return sum(args)
+
+print(sum_numbers(1, 2, 3))  # Outputs 6
+```
+
+1. `**kwargs in Python`: `**kwargs` allows a function to accept an arbitrary number of keyword arguments. It's used in function definitions. Inside the function, kwargs is a dictionary of the passed keyword arguments.
+```bash
+def print_info(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+print_info(name="Neo", age=30)
+```
+
+1. `Handling Named Arguments in a Function`: To handle named (keyword) arguments, you can use **kwargs or specify them explicitly in the function definition. Both methods allow you to access the arguments by their names inside the function.
+
+1. `Creating a MySQL Database`:
+```bash
+CREATE DATABASE your_database_name;
+```
+
+1. `Creating a MySQL User and Granting Privileges`:
+```bash
+CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON your_database_name.* TO 'username'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+1. `ORM (Object-Relational Mapping)`: ORM is a technique that lets you query and manipulate data from a database using an object-oriented paradigm. An ORM library maps classes to database tables, objects to rows, and attributes to columns.
+
+1. `Mapping a Python Class to a MySQL Table`: Using an ORM like SQLAlchemy, you can map a Python class to a MySQL table like this:
+```bash
+from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+engine = create_engine('mysql+mysqlconnector://username:password@localhost/your_database_name')
+Base.metadata.create_all(engine)
+```
+
+1. `Handling Different Storage Engines with the Same Codebase`: If you're using an ORM, it abstracts the underlying database engine, allowing you to interact with different databases using the same code. For raw SQL, ensure your queries are compatible with both engines or use conditionals to differentiate commands based on the engine.
+
+1. `Using Environment Variables`: Environment variables are used to keep configuration settings outside of your application's code. In Python, you can use the os module to access them:
+```bash
+import os
+db_password = os.getenv('DB_PASSWORD')
+```
+
+<center> <h2>Authors</h2> </center>
+This project was created and maintained by [Carpentier Jeremy](https://github.com/CappieGold) and [Huybrechts David Hache](https://github.com/Hache-David)
 <br>
