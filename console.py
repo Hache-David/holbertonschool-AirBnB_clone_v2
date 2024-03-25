@@ -143,7 +143,8 @@ class HBNBCommand(cmd.Cmd):
                     continue  # Skip if the value cannot be converted to number
             
                 setattr(new_instance, key, value)  # Set the attribute if everything is valid
-
+        
+        storage.new(new_instance)
         storage.save()
         print(new_instance.id)
 
