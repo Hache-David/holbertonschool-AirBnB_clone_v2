@@ -10,3 +10,4 @@ models/__pycache__/amenity.cpython-310.pyc
 models/__pycache__/__init__.cpython-310.pyc
 file.json
 test_params_create
+main_delete.py
