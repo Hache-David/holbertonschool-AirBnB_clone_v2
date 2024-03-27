@@ -24,35 +24,33 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """Creates the engine to the database.
-        """
-        var_eng = "{0}+{1}://{2}:{3}@{4}:3306/{5}".format(
-            'mysql', 'mysqldb', getenv('HBNB_MYSQL_USER'),
-            getenv('HBNB_MYSQL_PWD'), getenv('HBNB_MYSQL_HOST'),
-            getenv('HBNB_MYSQL_DB'))
-        self.__engine = create_engine(var_eng, pool_pre_ping=True)
+        """Initialize the DBStorage instance"""
+        user = getenv('HBNB_MYSQL_USER')
+        pwd = getenv('HBNB_MYSQL_PWD')
+        host = getenv('HBNB_MYSQL_HOST')
+        db = getenv('HBNB_MYSQL_DB')
+        self.__engine = create_engine(f'mysql+mysqldb://{user}:{pwd}@{host}/{db}', pool_pre_ping=True)
 
-        if getenv('HBNB_ENV') == 'test':
+        if os.getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """"manage dict all cls and entities"""
-        new_dict = {}
-        if cls is not None:
-            if cls in all_classes:
-                see = self.__session.query(all_classes[cls])
-            else:
-                see = self.__session.query(cls)
-            for instance in see:
-                key = instance.__class__.__name__ + "." + instance.id
-                new_dict[key] = instance
-        if cls is None:
-            for clas in all_classes.keys():
-                see = self.__session.query(all_classes[clas])
-                for instance in see:
-                    key = instance.__class__.__name__ + "." + instance.id
-                    new_dict[key] = instance
-        return (new_dict)
+        self.__session = scoped_session(sessionmaker(bind=self.__engine, expire_on_commit=False))()
+        obj_dict = {}
+        if cls:
+            objs = self.__session.query(cls).all()
+            for obj in objs:
+                key = f'{type(obj).__name__}.{obj.id}'
+                obj_dict[key] = obj
+        else:
+            classes = [User, State, City, Amenity, Place, Review]  # Import these classes at the top
+            for cls in classes:
+                objs = self.__session.query(cls).all()
+                for obj in objs:
+                    key = f'{cls.__name__}.{obj.id}'
+                    obj_dict[key] = obj
+        return obj_dict
 
     def new(self, obj):
         """Add obj to the current database session."""
@@ -68,12 +66,7 @@ class DBStorage:
             self.__session.delete(obj)
 
     def reload(self):
-        """Create all tables into database and initialize a new session"""
+        """Create all tables in the database and initialize a new session"""
         Base.metadata.create_all(self.__engine)
-        Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        self.__session = scoped_session(Session)
-
-    def close(self):
-        """call remove() method on the private session attribute
-        """
-        self.__session.close()
+        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        self.__session = scoped_session(session_factory)()
