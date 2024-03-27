@@ -4,7 +4,6 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float
 from sqlalchemy.orm import relationship
 from os import getenv
-from models import Amenity
 
 
 # Table d'association pour la relation many-to-many entre Place et Amenity
@@ -20,7 +19,7 @@ class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = 'places'
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
-    user_id = Column(String(60), ForeignKey('user.id'), nullable=False)
+    user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
     name = Column(String(128), nullable=False)
     description = Column(String(1024), nullable=False)
     number_rooms = Column(Integer, default=0, nullable=False)
@@ -32,6 +31,7 @@ class Place(BaseModel, Base):
     amenity_ids = []
 
     if getenv('HBNB_TYPE_STORAGE') == 'db':
+        from models import Amenity
         reviews = relationship("Review", backref="place",
                                cascade="all, delete-orphan")
         amenities = relationship("Amenity", secondary=place_amenity,
