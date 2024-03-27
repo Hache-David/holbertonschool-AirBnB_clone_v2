@@ -61,6 +61,7 @@ class Place(BaseModel, Base):
             Setter for amenities that adds an amenity.
             id to the amenity_ids list
             """
+            from models.amenity import Amenity
             if not isinstance(obj, Amenity):
                 return
             if obj.id not in self.amenity_ids:
