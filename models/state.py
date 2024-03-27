@@ -14,7 +14,7 @@ class State(BaseModel, Base):
 
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
         # Relationship with the City class for DBStorage
-        cities = relationship("City", back_populates="state",
+        cities = relationship("City", backref="state",
                               cascade="all, delete-orphan")
     else:
         # Getter attribute cities for FileStorage
