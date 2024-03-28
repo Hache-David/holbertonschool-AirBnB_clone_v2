@@ -5,16 +5,18 @@ from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.city import City
 import models
+from os import getenv
 
 
 class State(BaseModel, Base):
     """ State class """
     __tablename__ = 'states'
     name = Column(String(128), nullable=False)
-    
-    if os.getenv("HBNB_TYPE_STORAGE") == "db":
+
+    if getenv("HBNB_TYPE_STORAGE") == "db":
         # Relationship with the City class for DBStorage
-        cities = relationship("City", back_populates="state", cascade="all, delete-orphan")
+        cities = relationship("City", backref="state",
+                              cascade="all, delete-orphan")
     else:
         # Getter attribute cities for FileStorage
         @property
