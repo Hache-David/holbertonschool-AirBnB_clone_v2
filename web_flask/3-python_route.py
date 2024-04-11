@@ -22,7 +22,7 @@ def hello1(text):
     return "C " + text_without_space
 
 @app.route("/python/", defaults={'text': 'is cool'}, strict_slashes=False)
-@app.route("/python/<text>", strict_slashes=False)
+@app.route('/python/<text>', strict_slashes=False)
 def hello2(text):
     text_without_space2 = text.replace('_', ' ')
     return "Python " + text_without_space2
